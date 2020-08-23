@@ -3,7 +3,7 @@ from html.parser import HTMLParser
 
 username = input("Enter a username: ")
 
-r = requests.get('https://www.instagram.com/' + username + '/?hl=en')
+r = requests.get('https://www.instagram.com/' + username + '/')
 page_Source = r.text
 
 followerCount = []
@@ -15,12 +15,10 @@ class MyHTMLParser(HTMLParser):
         pass
     def handle_data(self, data):
         list1 = data.split('"')
-        if 'userInteractionCount' in list1:
-           followerCount.append(list1[list1.index('userInteractionCount') + 2])
-            
+        if 'edge_followed_by' in list1:
+            followerCount.append(list1[list1.index('edge_followed_by') + 3])
 
-clean_Source = page_Source.replace("\n", "")
+clean_Source = page_Source.replace("\n", "").replace('}','').replace(':','').replace(',','')
 parser = MyHTMLParser()
 parser.feed(clean_Source)
-print(followerCount)
-
+print(int(followerCount[0]))
